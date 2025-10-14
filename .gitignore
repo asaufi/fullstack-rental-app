@@ -1,6 +1,8 @@
 # Node.js / React
 frontend/node_modules/
 frontend/build/
+frontend/package-lock.json
+frontend/package.json
 
 # Java / Spring Boot
 backend/target/
