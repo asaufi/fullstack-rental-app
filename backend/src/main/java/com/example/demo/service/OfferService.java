@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.repository.OfferRepository;
 import java.util.*;
@@ -21,7 +22,7 @@ public class OfferService {
     public Optional<Offer> getOfferById(Long id) {
         return offerRepository.findById(id);
     }
-    public Offer createOffer(Offer offer) {
+    public Offer createOffer(@RequestBody Offer offer) {
         return offerRepository.save(offer);
     }
 

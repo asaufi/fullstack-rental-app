@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import OfferList from "./components/ListOffers";
+import ListOffers from "./components/ListOffers";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
@@ -13,7 +13,7 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={<OfferList />} />
+        <Route path="/" element={<ListOffers />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
