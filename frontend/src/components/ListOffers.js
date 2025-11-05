@@ -1,33 +1,45 @@
 import { useEffect, useState } from "react";
 import { getOffers, createOffer } from "../services/api";
-import {Container, Row, Col, Form, Button, Table} from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
 
+function ListOffers() {
+  const [offers, setOffers] = useState([]);
+  const [offer, setOffer] = useState({
+    title: "",
+    pickupLocation: "",
+    pickupDateTime: "",
+    returnLocation: "",
+    mobilityService: "",
+    price: "",
+    createdBy: "",
+  });
+  const [role, setRole] = useState(null);
 
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) setRole(storedRole);
 
-function ListOffers ()
-{
-    const [offers,setOffers] = useState([]);
-    const [offer,setOffer] = useState({title: "", pickupLocation: "", pickupDateTime: "", returnLocation:"",
-                                        mobilityService:"",price:"",createdBy:""})
+    getOffers().then((res) => setOffers(res.data));
+  }, []);
 
-    const handleChange = (e)=>{
-      setOffer({...offer, [e.target.name]: e.target.value});
-    }
-    const handleSubmit = (e)=>{
-      e.preventDefault();
-      createOffer(offer)
-        .then(()=> alert("Offre ajoutée avec succès"))
-        .catch(() => alert("Erreur lors de l'ajout de l'offre!"))
-    }
-    useEffect(()=>{
-        getOffers()
-        .then((res)=>setOffers(res.data))
-    }, []);
+  const handleChange = (e) => {
+    setOffer({ ...offer, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createOffer(offer)
+      .then(() => alert("Offre ajoutée avec succès"))
+      .catch(() => alert("Erreur lors de l'ajout de l'offre!"));
+  };
 
   return (
     <Container className="py-4">
-      <h2 className="mb-4">Ajouter Nouvelle Offre</h2>
-      <Form onSubmit={handleSubmit}>
+      {role === "ADMIN" && (
+        <>
+          <h2 className="mb-4">Ajouter Nouvelle Offre</h2>
+          <Form onSubmit={handleSubmit}>
+      
         <Row className="mb-3">
           <Col>
             <Form.Group controlId="title">
@@ -117,6 +129,10 @@ function ListOffers ()
           Ajouter
         </Button>
       </Form>
+            
+          
+        </>
+      )}
 
       <h2 className="mt-5">Liste des Offres</h2>
       {offers.length === 0 ? (

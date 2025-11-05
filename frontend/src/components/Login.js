@@ -1,35 +1,42 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { loginUsers } from "../services/api";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+
+    // ✅ Define the credentials before using them
+    const credentials = {
+      username,
+      password,
+    };
 
     try {
-      const response = await loginUsers({ username, password });
+      const response = await loginUsers(credentials); // <-- using your api.js helper
+      const token = response.data.token;
 
-      const token = response.data.token; // backend returns { token: "..." }
-
-      // Save token for future requests
+      // ✅ Save token
       localStorage.setItem("token", token);
-      localStorage.setItem("username", username);
 
+      // ✅ Decode the JWT to extract the role and username
+      const decoded = jwtDecode(token);
+      const userRole = decoded.roles; // matches your JwtUtil claim
+      const usernameFromToken = decoded.sub; // "sub" = subject (the username)
 
-      console.log("Login successful! Token saved:", token);
+      // ✅ Save data in localStorage
+      localStorage.setItem("role", userRole);
+      localStorage.setItem("username", usernameFromToken);
 
-      // Redirect or update UI
-      window.location.href = "/offers"; // example redirect
-
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError("Nom d'utilisateur ou mot de passe incorrect.");
+      alert(`Bienvenue ${usernameFromToken} (${userRole})`);
+      window.location.href = "/"; // redirect to offers page
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Erreur de connexion !");
     }
   };
 
@@ -44,6 +51,7 @@ function Login() {
             placeholder="Nom d'utilisateur"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </Form.Group>
 
@@ -54,14 +62,15 @@ function Login() {
             placeholder="Mot de passe"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </Form.Group>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
         <Row>
           <Col className="d-grid">
-            <Button type="submit" variant="primary">Se connecter</Button>
+            <Button type="submit" variant="primary">
+              Se connecter
+            </Button>
           </Col>
         </Row>
       </Form>

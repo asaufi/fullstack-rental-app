@@ -1,8 +1,6 @@
-import axios from "axios"
+import axios from "axios";
 
-
-const API_URL = "http://localhost:8080/api"
-
+const API_URL = "http://localhost:8080/api";
 
 // Create a single axios instance
 const api = axios.create({
@@ -18,9 +16,8 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-
-
-export const getOffers = () => axios.get(`${API_URL}/offers`)
-export const createOffer = (offer) => axios.post(`${API_URL}/offers`,offer)
-export const registerUsers = (user)=> axios.post(`${API_URL}/users`, user)
-export const loginUsers = (credentials) => axios.post("http://localhost:8080/api/auth/login", credentials); 
+// ✅ Use the configured `api` instance for all calls
+export const getOffers = () => api.get("/offers");
+export const createOffer = (offer) => api.post("/offers", offer);
+export const registerUsers = (user) => api.post("/users", user);
+export const loginUsers = (credentials) => api.post("/auth/login", credentials);

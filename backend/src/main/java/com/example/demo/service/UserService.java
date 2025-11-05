@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import org.springframework.stereotype.Service;
+
+import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
@@ -26,8 +28,12 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        return userRepository.save(user);
+    if (user.getRole() == null) {
+        user.setRole(Role.USER); 
     }
+    return userRepository.save(user);
+}
+
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);

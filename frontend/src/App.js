@@ -1,10 +1,28 @@
 import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
 import ListOffers from "./components/ListOffers";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import { Navbar, Nav, Container } from "react-bootstrap";
 
 function App() {
+  const [username, setUsername] = useState(null);
+
+  // Check if the user is logged in by retrieving the username from localStorage
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+    setUsername(null);
+    window.location.href = "/login"; // Redirect to login page after logout
+  };
+
   return (
     <Router>
       {/* Navigation Bar */}
@@ -23,6 +41,16 @@ function App() {
               <Nav.Link as={NavLink} to="/register">
                 Inscription
               </Nav.Link>
+            </Nav>
+            <Nav>
+              {username ? (
+                <>
+                  <Nav.Link disabled>Hi, {username}</Nav.Link>
+                  <Nav.Link onClick={handleLogout} style={{ cursor: "pointer" }}>
+                    Déconnexion
+                  </Nav.Link>
+                </>
+              ) : null}
             </Nav>
           </Navbar.Collapse>
         </Container>

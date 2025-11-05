@@ -20,13 +20,13 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role; // ✅ New field
 
     public User() 
     {
     }
-    public User(String username, String password, String role, String email)
+    public User(String username, String password, Role role, String email)
     {
         this.username = username;
         this.password = password;
@@ -47,12 +47,12 @@ public class User {
         this.username = username;
     }
 
-    public void setRole(String role)
+    public void setRole(Role role)
     {
         this.role = role;
     }
 
-    public String getRole()
+    public Role getRole()
     {
         return role;
     }
