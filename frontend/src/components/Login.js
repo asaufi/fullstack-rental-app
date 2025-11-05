@@ -1,16 +1,39 @@
 import React, { useState } from "react";
-import {Container, Row, Col, Form, Button} from 'react-bootstrap';
+import axios from "axios";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { loginUsers } from "../services/api";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Tentative de login :", { username, password });
+    setError("");
+
+    try {
+      const response = await loginUsers({ username, password });
+
+      const token = response.data.token; // backend returns { token: "..." }
+
+      // Save token for future requests
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username);
+
+
+      console.log("Login successful! Token saved:", token);
+
+      // Redirect or update UI
+      window.location.href = "/offers"; // example redirect
+
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError("Nom d'utilisateur ou mot de passe incorrect.");
+    }
   };
 
-return (
+  return (
     <Container className="py-4" style={{ maxWidth: 400 }}>
       <h2 className="mb-3">Connexion</h2>
       <Form onSubmit={handleSubmit}>
@@ -33,6 +56,8 @@ return (
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
         <Row>
           <Col className="d-grid">
